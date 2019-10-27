@@ -8,7 +8,7 @@ import cookieParser from 'cookie-parser';
 import { OpenApiValidator } from 'express-openapi-validator';
 import errorHandler from '../api/middlewares/error.handler';
 
-let  connectDb = null
+let connectDb = null
 
 if ( process.env.TEST_MOCK ) {
   connectDb = require('../models/mock')

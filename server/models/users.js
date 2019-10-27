@@ -1,6 +1,5 @@
 import mongoose from 'mongoose';
 //import { fieldEncryption } from 'mongoose-field-encryption';
-import './common/env';
 import jwt from 'jsonwebtoken';
 import Joi from 'joi';
 

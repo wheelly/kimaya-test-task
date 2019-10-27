@@ -14,7 +14,8 @@ const connectDb = async () => {
   //db.client.setLogLevel(5, 'query')
 
   try {
-    await db.dropCollection('articles');
+    await db.dropCollection('users');
+    await db.dropCollection('stats');
   } catch (err) {
     l.warn(`Drop collection error: ${err}`);
   }

@@ -9,29 +9,11 @@ export class Controller {
       await fn(req, res);
     } catch (e) {
       l.error(e);
-      res
-        .status(500)
-        .send({ ok: false, code: 500, description: 'Internal error.' });
+      res.status(500).send({ description: 'Internal error.' });
     }
   }
 
-  async signup(req, res) {
-    const { name, email } = req.body;
-
-    const { error } = validateUser(req.body);
-    if (error) return res.status(400).send(error.details[0].message);
-
-    //find an existing user
-    const userExists = await User.findOne({ email: req.body.email });
-    if (userExists) return res.status(400).send("User already registered.");
-
-    const password = await bcrypt.hash(req.password, 10);
-    const user = await new User({
-      name,
-      email,
-      password,
-    }).save();
-
+  static resp_with_token(res, user) {
     const token = user.generateAuthToken();
     res.header('x-auth-token', token).send({
       _id: user._id,
@@ -40,13 +22,46 @@ export class Controller {
     });
   }
 
+  async signup(req, res) {
+    const { name, email } = req.body;
+
+    const { error } = validateUser(req.body);
+    if (error)
+      return res.status(400).send({ description: error.details[0].message });
+
+    //find an existing user
+    const userExists = await User.findOne({ email: req.body.email });
+    if (userExists)
+      return res.status(400).send({ description: 'User already registered.' });
+
+    const password = await bcrypt.hash(req.body.password, 10);
+    const user = await new User({
+      name,
+      email,
+      password,
+    }).save();
+
+    Controller.resp_with_token(res, user);
+  }
+
   async login(req, res) {
-    await auth(req, res);
-    const user = await User.findById(req.user._id).select(
-      '-password',
-      '-isAdmin'
-    );
-    res.send(user);
+    if (!req.body.email)
+      return res.status(401).send({ description: 'Access denied' });
+
+    const user = await User.findOne({ email: req.body.email });
+    if (!user)
+      return res
+        .status(400)
+        .send({ description: 'Login or password incorrect' });
+
+    const ret = await bcrypt.compare(req.body.password, user.password);
+
+    if (!ret)
+      return res
+        .status(400)
+        .send({ description: 'Login or password incorrect' });
+
+    Controller.resp_with_token(res, user);
   }
 }
 

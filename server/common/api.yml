@@ -1,131 +1,81 @@
 openapi: 3.0.1
 info:
   title: kimaya-test-task
-  description: My cool app
+  description: Coolest app for searching YouTube
   version: 1.0.0
 servers:
   - url: /api/v1
-tags:
-  - name: Examples
-    description: Simple example endpoints
-  - name: Specification
-    description: The swagger API specification
+
 paths:
-  /examples:
-    get:
-      tags:
-        - Examples
-      description: Fetch all examples
-      responses:
-        200:
-          description: Return the example with the specified id
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Example'
-        4XX:
-          description: Example not found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        5XX:
-          description: Example not found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
+  /user/signup:
     post:
       tags:
-        - Examples
-      description: Create a new example
+        - Sign up new user
       requestBody:
-        description: an example
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/ExampleBody'
-        required: true
+              $ref: '#/components/schemas/User'
       responses:
-        201:
-          description: Return the example with the specified id
+        200:
+          description: Return new user
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Example'
-        4XX:
-          description: Example not found
+                $ref: '#/components/schemas/User'
+
+
+  /user/login:
+    post:
+      tags:
+        - Loggin in user
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+
+      responses:
+        200:
+          description: Return user
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Error'
-        5XX:
-          description: Example not found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-  /examples/{id}:
+                $ref: '#/components/schemas/User'
+
+  /main/search:
     get:
       tags:
-        - Examples
+        - Search YouTube
       parameters:
-        - name: id
-          in: path
-          description: The id of the example to retrieve
+        - name: q
+          in: query
+          description: Search string for YouTube
           required: true
           schema:
-            type: integer
+            type: string
+            minimum: 3
+            maximum: 100
       responses:
         200:
-          description: Return the example with the specified id
+          description: Return YouTube json
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Example'
-        4XX:
-          description: Example not found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-        5XX:
-          description: Example not found
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Error'
-  /spec:
-    get:
-      tags:
-        - Specification
-      responses:
-        200:
-          description: Return the API specification
-          content: {}
+                type: object
+
+
 components:
   schemas:
-    Example:
-      type: object
-      properties:
-        id:
-          type: integer
-          example: 3
-        name:
-          type: string
-          example: example 3
-    Error:
-      type: object
-      additionalProperties: true
-
-    ExampleBody:
-      title: example
-      required:
-        - name
+    User:
       type: object
       properties:
         name:
           type: string
-          example: no_stress
+        email:
+          type: string

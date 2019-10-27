@@ -1,10 +1,9 @@
-import authC from './api/controllers/auth/controller';
-import c from './api/controllers/main/controller';
-import adminC from './api/controllers/admin/controller';
+import mainRouter from './api/controllers/main/router';
+import authRouter from './api/controllers/auth/router';
+import adminRouter from './api/controllers/admin/router';
 
 export default function routes(app) {
-  app.use('/api/v1/search', c.search);
-  app.use('/api/v1/login', authC.login);
-  app.use('/api/v1/signup', authC.signup);
-  app.use('/api/v1/admin', adminC.show);
+  app.use('/api/v1/main', mainRouter)
+  app.use('/api/v1/user', authRouter);
+  app.use('/api/v1/admin', adminRouter);
 }

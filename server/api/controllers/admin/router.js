@@ -5,4 +5,4 @@ import auth from '../../middlewares/auth';
 export default express
     .Router()
     .use(async (req, res, next) => await auth(req, res, next, true)) //we protect main page - authorised users only
-    .get('/admin', c.stats);
+    .get('/', c.stats);
