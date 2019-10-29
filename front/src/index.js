@@ -1,6 +1,20 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import App from './App';
+import React from 'react'
+import { render } from 'react-dom'
+import { BrowserRouter as Router } from 'react-router-dom'
+import Root from './containers/Root'
+import configureStore from './store/configureStore'
+import { saveState } from "./store/sessionStore";
 
-ReactDOM.render(<App />, document.getElementById('root'));
+const store = configureStore()
+
+store.subscribe(() => {
+    saveState(store.getState());
+})
+
+render(
+    <Router>
+        <Root store={store} />
+    </Router>,
+    document.getElementById('root')
+)
 
