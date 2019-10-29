@@ -22,9 +22,10 @@ class CreateAccount extends UserForm {
         this.setState({submitted})
         if (fullname && email && password) {
             try {
-                let action = await this.props.registerUser(fullname, email, password, ['fullname', 'email', 'password'])
-                if (action.type === userConstants.REGISTER_SUCCESS) {
-                    this.props.setOkMessage('Registration successful')
+                const action = await this.props.registerUser(fullname, email, password, ['fullname', 'email', 'password'])
+                if ( action.type === userConstants.REGISTER_SUCCESS ) {
+                    sessionStorage.setItem('x-auth-token', action['x-auth-token'])
+                    this.props.history.push('/')
                 }
             } catch (e) {
                 console.log(`Error: ${e}`)

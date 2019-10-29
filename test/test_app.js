@@ -52,12 +52,14 @@ const flow = async () => {
   const auth_token = r.header['x-auth-token'];
   const qq = q.stringify({ q: 'parliamo italiano' });
 
+
   r = await request(app)
     .get(`/api/v1/main/search?${qq}`)
     .set({ authorization: auth_token })
     .expect('Content-Type', /json/);
 
   l.debug(r.body);
+
 };
 
 const tryAccess = async () => {

@@ -10,6 +10,10 @@ import HomePage from '../components/HomePage'
 import AdminPage from '../components/AdminPage'
 import { PrivateRoute } from '../components/PrivateRoute'
 
+//TODO comment out these 2 lines to test on real backend
+import ConfigureFakeBackend from '../dev/fake-backend'
+ConfigureFakeBackend()
+
 const Root = ({ store }) => (
     <Provider store={store}>
         <div>

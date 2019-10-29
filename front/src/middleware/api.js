@@ -1,22 +1,12 @@
 // Fetches an API response and normalizes the result JSON according to schema.
 // This makes every API response have the same shape, regardless of how nested it was.
-const callApi = async (request) => {
-
+const callApi = (request) => {
     const requestOptions = request.method === 'POST' ? {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(request.fields)
     } : request.fields
-
-    try {
-        const res = await fetch(request.endpoint, requestOptions);
-        const json = await res.json();
-        if (!res.ok)
-            return await Promise.reject(json);
-        return JSON.parse(json);
-    } catch (e) {
-        return await Promise.reject(e)
-    }
+    return fetch(request.endpoint, requestOptions);
 }
 
 // A Redux middleware that interprets actions with CALL_API info specified.
@@ -57,13 +47,14 @@ export default store => next => async action => {
     next(actionWith({ type: requestType }))
 
     try {
-        const res = await callApi(action)
-        next(actionWith({
-            res,
+        const response = await callApi(action)
+        const json_s = await response.json()
+        return next(actionWith({
+            response: JSON.parse(json_s),
             type: successType
         }))
     } catch (e) {
-        next(actionWith({
+        return next(actionWith({
             type: failureType,
             error: e.message || 'Something bad happened'
         }))

@@ -11,22 +11,14 @@ const authUser = (email, password) => ({
 
 // Fetches a single user from Github API unless it is cached.
 // Relies on Redux Thunk middleware.
-export const signIn = (email, password, requiredFields = []) => (dispatch, getState) => {
-    /*
-    const user = getState()
-    if (user && requiredFields.every(key => user.hasOwnProperty(key))) {
-        return null
-    }
-    */
+export const signIn = (email, password) => (dispatch, getState) => {
     return dispatch(authUser(email, password))
 }
 
-const logoffUser = (id) => ({
-    types: [userConstants.LOGOFF_REQUEST, userConstants.LOGOFF_SUCCESS, userConstants.LOGOFF_FAILURE],
-    endpoint: endPoints.USER_LOGOFF,
-    method: 'POST',
-    fields: { id }
-})
+const logoffUser = (id) => {
+    sessionStorage.clear();
+    return {}
+}
 
 export const logoff = (id) => (dispatch, getState) => (
     dispatch(logoffUser(id))
@@ -38,6 +30,7 @@ const createUser = (fullname, email, password) => ({
     method: 'POST',
     fields: { fullname, email, password }
 })
+
 
 export const registerUser = (fullname, email, password, requiredFields = []) => (dispatch, getState) => (
     dispatch(createUser(fullname, email, password))

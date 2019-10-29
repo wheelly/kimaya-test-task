@@ -6,6 +6,6 @@ const fetchDomains = (userId, userToken) => ({
     fields: { userId, userToken }
 })
 
-export const getDomains = (user) => (dispatch, getState) => (
+export const getStats = (user) => (dispatch, getState) => (
     dispatch(fetchDomains(user.id, user.token))
 )

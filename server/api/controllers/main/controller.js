@@ -1,13 +1,15 @@
 import axios from 'axios';
 import l from '../../../common/logger'
 import Stat from '../../../models/stats';
+//import 'axios-debug-log';
 
 const YOUTUBE_SEARCH = 'https://www.googleapis.com/youtube/v3/search';
 const opts = {
-  parts: 'id,snippet',
+  part: 'id,snippet',
   maxResults: 20,
   videoEmbeddable: 'true',
   type: 'video',
+  key: process.env.GOOGLE_API_KEY,
 };
 
 export class Controller {
@@ -26,13 +28,15 @@ export class Controller {
   async search(req, res) {
     const { q } = req.query;
 
-    l.debug(YOUTUBE_SEARCH)
+    l.debug(`Opts ${JSON.stringify({ ...opts, q})}`)
 
     const googleRes = await axios.get(YOUTUBE_SEARCH, {
-      params: { ...opts, q}
+      params: { ...opts, q},
+      headers: { Accept: 'application/json' },
     });
 
-    res.send(googleRes);
+    l.debug(googleRes.data)
+    res.send(googleRes.data);
   }
 
   async stats(req, res) {

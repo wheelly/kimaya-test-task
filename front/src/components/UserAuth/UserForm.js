@@ -158,10 +158,5 @@ export default class UserForm extends Component {
         )
     }
 
-    setAccessToken(action) {
-        const auth_token = action.header['x-auth-token']
-        sessionStorage.setItem('x-auth-token', auth_token)
-    }
-
 }
 

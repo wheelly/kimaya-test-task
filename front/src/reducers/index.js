@@ -1,6 +1,7 @@
 import { userConstants } from '../constants'
 import { combineReducers } from 'redux'
-import { getUserStats } from "../reducers/grid";
+import { getUserStats } from './grid';
+import { searchCore, playVideo } from './search';
 
 // Updates error message to notify about the failed fetches.
 const errorMessage = (state = null, action) => {
@@ -30,7 +31,8 @@ const userAuth = (state = {}, action)  => {
         case userConstants.LOGIN_REQUEST:
             return {}
         case userConstants.LOGIN_SUCCESS:
-            return action.response
+            const r = action.response
+            return { type: action.type, ...r.body, 'x-auth-token': r.header['x-auth-token'] }
         case userConstants.LOGIN_FAILURE:
             return {};
         default:
@@ -40,8 +42,11 @@ const userAuth = (state = {}, action)  => {
 
 const userReg = (state = {}, action)  => {
     switch (action.type) {
-        case userConstants.REGISTER_REQUEST:
         case userConstants.REGISTER_SUCCESS:
+            const r = action.response
+            return { type: action.type, ...r.body, 'x-auth-token': r.header['x-auth-token'] }
+        case userConstants.REGISTER_REQUEST:
+            return {}
         case userConstants.REGISTER_FAILURE:
             return {};
         default:
@@ -49,27 +54,19 @@ const userReg = (state = {}, action)  => {
     }
 }
 
-const userLogoff = (state = {}, action)  => {
-    switch (action.type) {
-        case userConstants.LOGOFF_REQUEST:
-            return state
-        case userConstants.LOGOFF_SUCCESS:
-            return {}
-        case userConstants.LOGOFF_FAILURE:
-            return state
-        default:
-            return state
-    }
-}
+const userLogoff = (state = {}, action)  => state;
+
 
 
 const rootReducer = combineReducers({
     userAuth,
     userReg,
     userLogoff,
+    searchCore,
+    playVideo,
     errorMessage,
     okMessage,
-    getDomains: getUserStats
+    getUserStats
 })
 
 export default rootReducer

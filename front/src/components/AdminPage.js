@@ -2,8 +2,7 @@ import React, {Component} from 'react';
 import {connect} from "react-redux";
 import { withRouter } from 'react-router-dom'
 
-import {getDomains} from "../actions/grid";
-import {loadUserSession} from "../store/sessionStore";
+import {getStats} from "../actions/grid";
 import {gridConstants} from "../constants";
 import PropTypes from 'prop-types'
 import MaterialTable from "material-table";
@@ -20,10 +19,10 @@ class Grid extends Component {
     }
 
     componentDidMount() {
-        const user = loadUserSession()
-        //let gridComp = this.refs.listGrid
-        //gridComp.api.showLoadingOverlay()
+        //const user = loadUserSession()
 
+
+        /*
         if (user) {
 
             this.props.getDomains(user)
@@ -36,6 +35,8 @@ class Grid extends Component {
                     (error) => console.log('REJECTED PROMISE', error)
                 )
         }
+
+         */
     }
 
     render() {
@@ -79,5 +80,5 @@ const mapStateToProps = state => ({
 })
 
 export default withRouter(connect(mapStateToProps, {
-    getDomains
+    getStats: getStats
 })(Grid))

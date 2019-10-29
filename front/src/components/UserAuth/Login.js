@@ -22,9 +22,9 @@ class Login extends UserForm {
         this.setState({submitted})
         if (email && password) {
             try {
-                const action = await this.props.signIn(email, password, ['email', 'password'])
+                const action = await this.props.signIn(email, password)
                 if ( action.type === userConstants.LOGIN_SUCCESS ) {
-                    this.setAccessToken(action)
+                    sessionStorage.setItem('x-auth-token', action['x-auth-token'])
                     this.props.history.push('/')
                 }
             } catch (e) {
