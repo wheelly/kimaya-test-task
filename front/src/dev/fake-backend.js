@@ -5,6 +5,8 @@ const storage = sessionStorage
 
 let users = JSON.parse(sessionStorage.getItem('users')) || [];
 
+let stats = JSON.parse(sessionStorage.getItem('stats')) || [];
+
 export default function configureFakeBackend() {
     //let realFetch = window.fetch;
     window.fetch = function (url, opts) {
@@ -24,8 +26,7 @@ export default function configureFakeBackend() {
 
                     if (filteredUsers.length) {
                         // if login details are valid return user details and fake jwt token
-                        const { _id, name, email } = filteredUsers[0]
-                        const responseJson = {body: {_id, name, email}, header: { 'x-auth-token': 'fake-jwt-token' }};
+                        const responseJson = {body: {...filteredUsers[0]}, header: { 'x-auth-token': filteredUsers[0]._id }};
                         resolve({ ok: true, json: () => Promise.resolve(JSON.stringify(responseJson))} )
                     } else {
                         console.log('email or password incorrect')
@@ -50,10 +51,14 @@ export default function configureFakeBackend() {
 
                     // save new user
                     newUser._id = users.length ? Math.max(...users.map(user => user._id)) + 1 : 1;
-                    console.log(newUser)
+                    if (newUser.email === 'wheelly@yandex.ru') {
+                        newUser.isAdmin = true
+                    } else {
+                        newUser.isAdmin = false;
+                    }
                     users.push(newUser);
                     storage.setItem('users', JSON.stringify(users));
-                    const responseJson = {body: newUser, header: { 'x-auth-token': 'fake-jwt-token' }};
+                    const responseJson = {body: newUser, header: { 'x-auth-token': newUser._id }};
                     resolve({ ok: true, json: () => Promise.resolve(JSON.stringify(responseJson))} )
 
                     return;
@@ -61,6 +66,28 @@ export default function configureFakeBackend() {
 
                 if (url.endsWith(endPoints.SEARCH_YOUTUBE)) {
                     const responseJson = {body: fakeGoogleRes() }
+                    resolve({ ok: true, json: () => Promise.resolve(JSON.stringify(responseJson))} )
+                    return;
+                }
+
+                if (url.endsWith(endPoints.STATS_WRITE) && opts.method === 'POST') {
+                    const newStatRecord = JSON.parse(opts.body);
+                    stats.push({...newStatRecord, date: Date.now(), uid: newStatRecord['x-auth-token']})
+                    resolve({ ok: true })
+                    return;
+                }
+
+                if (url.endsWith(endPoints.USER_STATS) ) {
+
+                    const responseJson = stats.map( row => {
+                        const user = users[row.uid - 1];
+                        const { name, email } = user
+                        const { date, searchString, videoId, thumbUrl } = row
+                        return { date, name, email, searchString, videoId, thumbUrl }
+                    })
+
+                    console.log(`Stats=${responseJson}`)
+
                     resolve({ ok: true, json: () => Promise.resolve(JSON.stringify(responseJson))} )
                     return;
                 }

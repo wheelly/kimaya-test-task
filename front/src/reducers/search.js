@@ -18,9 +18,10 @@ export const searchCore = (state = {}, action)  => {
 
 }
 
+
 export const playVideo = (state = {}, action)  => {
     if ( action.type === userConstants.PLAY_BUTTON_CLICKED )
-        return { videoId: action.playButton }
+        return { videoId: action.videoId }
     return { videoId: userConstants.DEFAULT_VIDEO }
 }
 

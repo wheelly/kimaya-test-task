@@ -1,6 +1,6 @@
 import { userConstants } from '../constants'
 import { combineReducers } from 'redux'
-import { getUserStats } from './grid';
+import { getStats } from './admingrid';
 import { searchCore, playVideo } from './search';
 
 // Updates error message to notify about the failed fetches.
@@ -54,9 +54,11 @@ const userReg = (state = {}, action)  => {
     }
 }
 
-const userLogoff = (state = {}, action)  => state;
-
-
+const userLogoff = (state = {}, action)  => {
+    if (action.type === userConstants.LOGOFF )
+        return {}
+    return state
+}
 
 const rootReducer = combineReducers({
     userAuth,
@@ -66,7 +68,7 @@ const rootReducer = combineReducers({
     playVideo,
     errorMessage,
     okMessage,
-    getUserStats
+    getStats
 })
 
 export default rootReducer

@@ -2,15 +2,15 @@ import React, {Component} from 'react';
 import {connect} from "react-redux";
 import { withRouter } from 'react-router-dom'
 
-import {getStats} from "../actions/grid";
-import {gridConstants} from "../constants";
+import {getStats} from "../actions/admingrid";
+import {adminGridConstants} from "../constants";
 import PropTypes from 'prop-types'
 import MaterialTable from "material-table";
 
 class Grid extends Component {
     static propTypes = {
         columnDefs: PropTypes.array.isRequired,
-        rowData: PropTypes.array.isRequired,
+        rowData: PropTypes.array,
     }
 
     constructor(props) {
@@ -18,33 +18,26 @@ class Grid extends Component {
         this.state = { fetched: false }
     }
 
-    componentDidMount() {
-        //const user = loadUserSession()
+    loadStats = async () => {
+        try {
+            const action = await this.props.getStats()
+            if (action.type === adminGridConstants.STATS_GRID_SUCCESS)
+                this.setState({'fetched': true})
 
-
-        /*
-        if (user) {
-
-            this.props.getDomains(user)
-                .then(
-                    (action) => {
-                        if ( action.type === gridConstants.DOMAIN_GRID_SUCCESS) {
-                            this.setState({'fetched': true})
-                        }
-                    },
-                    (error) => console.log('REJECTED PROMISE', error)
-                )
+        } catch (e) {
+            console.log(`Error=${e}`)
         }
+    }
 
-         */
+    componentDidMount() {
+        this.loadStats()
     }
 
     render() {
         const { columnDefs, rowData } = this.props
         let columns = []
-        let rows = []
+
         /*
-        This is a special presentation for https://www.ag-grid.com/
         columns = [{headerName: name, field: name}]
         rows = [
             { <field:name>: rowData[<N>][<i>] }
@@ -52,14 +45,26 @@ class Grid extends Component {
          */
         if ( this.state.fetched ) {
             columns = columnDefs.map(name => ({title: name, field: name}))
-            rows = rowData.map( row => columnDefs.reduce((acc, item, i) => Object.assign(acc, {[item]: row[i]}), {} ) )
+            //rows = rowData.map( row => columnDefs.reduce((acc, item, i) => Object.assign(acc, {[item]: row[i]}), {} ) )
         }
+
         return (
             <MaterialTable
-                refs='listGrid'
-                title={this.props.title}
+                title='User Stats'
                 columns={columns}
-                data={rows}
+                data={
+                    rowData && rowData.map(row => {
+                        const {name, email, searchString, videoId, thumbUrl} = row
+                        let date = new Date(row.date);
+                        return (
+                            {
+                                date: date.toLocaleDateString() + ' ' + date.toLocaleTimeString(),
+                                name, email, searchString,
+                                videoId: <img /*className={classes.img}*/ alt={videoId} src={thumbUrl}/>
+                            }
+                        )
+                    })
+                }
                 onRowClick={((evt, hoveredRow) => this.setState({ hoveredRow }))}
                 options={{
                     sorting: true,
@@ -75,8 +80,8 @@ class Grid extends Component {
 }
 
 const mapStateToProps = state => ({
-    columnDefs: state.getDomains.columnDefs,
-    rowData: state.getDomains.rowData,
+    columnDefs: state.getStats.columnDefs,
+    rowData: state.getStats.rowData,
 })
 
 export default withRouter(connect(mapStateToProps, {

@@ -12,5 +12,5 @@ export const PrivateRoute = ({ component: Component, ...rest }) => (
 
 function checkAuthToken() {
     const authToken = sessionStorage.getItem('x-auth-token')
-    return authToken
+    return authToken && authToken !== 'undefined'
 }

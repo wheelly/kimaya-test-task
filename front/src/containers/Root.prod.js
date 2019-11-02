@@ -18,7 +18,7 @@ const Root = ({ store }) => (
             <Route path="/create_account" component={CreateAccount}/>
             {/* Main app logic */}
             <PrivateRoute exact path="/" component={HomePage} />
-            <PrivateRoute path="/grid" component={AdminPage} />
+            <PrivateRoute path="/admin" component={AdminPage} />
         </div>
     </Provider>
 )

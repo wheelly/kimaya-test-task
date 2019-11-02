@@ -17,14 +17,14 @@ class CreateAccount extends UserForm {
     onSubmit = async (e) => {
         e.preventDefault();
         this.props.resetErrorMessage()
-        const {fullname, email, password} = this.state
+        const {name, email, password} = this.state
         const submitted = true
         this.setState({submitted})
-        if (fullname && email && password) {
+        if (name && email && password) {
             try {
-                const action = await this.props.registerUser(fullname, email, password, ['fullname', 'email', 'password'])
+                const action = await this.props.registerUser(name, email, password)
                 if ( action.type === userConstants.REGISTER_SUCCESS ) {
-                    sessionStorage.setItem('x-auth-token', action['x-auth-token'])
+                    this.setSession(action)
                     this.props.history.push('/')
                 }
             } catch (e) {
@@ -34,13 +34,13 @@ class CreateAccount extends UserForm {
     }
 
     render() {
-        const { submitted, fullname, email, password } = this.state
+        const { submitted, name, email, password } = this.state
         const { classes } = this.props
         return (
             <div>
                 <form className={classes.lnkUserForm} onSubmit={this.onSubmit}>
                     <legend>Create Your Account</legend>
-                    <MandatoryInput empty={!fullname} submitted={submitted} onChange={this.onChange}  type="text" name="fullname" placeholder="Full Name"/>
+                    <MandatoryInput empty={!name} submitted={submitted} onChange={this.onChange} type="text" name="name" placeholder="Full Name"/>
                     <MandatoryInput empty={!email} submitted={submitted} onChange={this.onChange}  type="email" name="email" placeholder="Email Address" />
                     <MandatoryInput empty={!password} submitted={submitted} onChange={this.onChange}  type="password" name="password" placeholder="Password" />
                     <Button type="submit" className={classes.submitButton}>Create Account</Button>
@@ -59,16 +59,16 @@ class CreateAccount extends UserForm {
 
 const mapStateToProps = state => ({
     errorMessage: state.errorMessage,
-    okMessage: state.okMessage
+    okMessage: state.okMessage,
 })
 
 const styledCreateAccount = withStyles(FormStyles)(CreateAccount)
 
 export default withRouter(connect(mapStateToProps, {
-    registerUser,
     resetErrorMessage,
     resetOkMessage,
-    setOkMessage
+    setOkMessage,
+    registerUser
 })(styledCreateAccount))
 
 

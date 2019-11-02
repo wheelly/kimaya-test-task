@@ -24,7 +24,7 @@ class Login extends UserForm {
             try {
                 const action = await this.props.signIn(email, password)
                 if ( action.type === userConstants.LOGIN_SUCCESS ) {
-                    sessionStorage.setItem('x-auth-token', action['x-auth-token'])
+                    this.setSession(action)
                     this.props.history.push('/')
                 }
             } catch (e) {

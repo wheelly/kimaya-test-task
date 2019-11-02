@@ -6,12 +6,6 @@ import configureStore from './store/configureStore'
 
 const store = configureStore()
 
-/*
-store.subscribe(() => {
-    saveState(store.getState());
-})
- */
-
 render(
     <Router>
         <Root store={store} />

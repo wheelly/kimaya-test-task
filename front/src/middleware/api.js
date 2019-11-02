@@ -1,13 +1,4 @@
-// Fetches an API response and normalizes the result JSON according to schema.
-// This makes every API response have the same shape, regardless of how nested it was.
-const callApi = (request) => {
-    const requestOptions = request.method === 'POST' ? {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(request.fields)
-    } : request.fields
-    return fetch(request.endpoint, requestOptions);
-}
+import { callApi } from './callapi'
 
 // A Redux middleware that interprets actions with CALL_API info specified.
 // Performs the call and promises when such actions are dispatched.

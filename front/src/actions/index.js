@@ -15,25 +15,16 @@ export const signIn = (email, password) => (dispatch, getState) => {
     return dispatch(authUser(email, password))
 }
 
-const logoffUser = (id) => {
-    sessionStorage.clear();
-    return {}
-}
-
-export const logoff = (id) => (dispatch, getState) => (
-    dispatch(logoffUser(id))
-)
-
-const createUser = (fullname, email, password) => ({
+const createUser = (name, email, password) => ({
     types: [userConstants.REGISTER_REQUEST, userConstants.REGISTER_SUCCESS, userConstants.REGISTER_FAILURE],
     endpoint: endPoints.USER_REGISTER,
     method: 'POST',
-    fields: { fullname, email, password }
+    fields: { name, email, password }
 })
 
 
-export const registerUser = (fullname, email, password, requiredFields = []) => (dispatch, getState) => (
-    dispatch(createUser(fullname, email, password))
+export const registerUser = (name, email, password) => (dispatch, getState) => (
+    dispatch(createUser(name, email, password))
 )
 
 // resets the currently visible error message
