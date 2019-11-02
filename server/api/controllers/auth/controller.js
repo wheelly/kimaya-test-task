@@ -15,10 +15,12 @@ export class Controller {
 
   static resp_with_token(res, user) {
     const token = user.generateAuthToken();
+    const { _id, name, email, isAdmin } = user;
     res.header('x-auth-token', token).send({
-      _id: user._id,
-      name: user.name,
-      email: user.email,
+      _id,
+      name,
+      email,
+      isAdmin,
     });
   }
 

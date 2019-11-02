@@ -1,5 +1,4 @@
 import mongoose from 'mongoose';
-import user from './users'
 
 const StatSchema = new mongoose.Schema({
   timestamp: { type: mongoose.SchemaTypes.Date, default: Date.now },
@@ -7,6 +6,7 @@ const StatSchema = new mongoose.Schema({
   uid: { type: mongoose.SchemaTypes.Number, required: true },
   searchString: { type: mongoose.SchemaTypes.String, required: true },
   videoDuration: { type: mongoose.SchemaTypes.Number, required: true },
+  thumbUrl: { type: mongoose.SchemaTypes.String, required: true }
 });
 
 export default mongoose.model('stat', StatSchema);

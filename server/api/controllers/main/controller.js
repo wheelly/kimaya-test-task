@@ -40,7 +40,7 @@ export class Controller {
   }
 
   async stats(req, res) {
-    const uid = req.params.uid;
+    const uid = req.user._id;
     const { videoId, searchString, videoDuration } = req.body;
 
     const resDb = await Stat.insertOne({

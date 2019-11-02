@@ -5,7 +5,20 @@ export class Controller {
   async stats(req, res) {
     try {
       /* TODO: implement limit and pages */
-      const dbRes = await Stats.all();
+      const dbRes = await Stats.aggregate
+        .lookup({
+          from: 'user',
+          localField: 'uid',
+          foreignField: '_id',
+          as: 'user',
+        })
+        .select('-password')
+        .map(row => {
+          const { name, email } = row.user;
+          const { date, searchString, videoId } = row;
+          return { date, name, email, searchString, videoId};
+        });
+
       res.send(dbRes);
     } catch (e) {
       l.error(e);

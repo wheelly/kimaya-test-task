@@ -48,6 +48,36 @@ paths:
               schema:
                 $ref: '#/components/schemas/User'
 
+  /main/stats:
+    post:
+      tags:
+        - Write user stats
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                videoId:
+                  type: string
+                searchString:
+                  type: string
+                videoDuration:
+                  type: number
+
+      responses:
+        200:
+          description: Return ok
+
+  /admin:
+    get:
+      tags:
+        - Show stats for admin user only
+      responses:
+        200:
+          content:
+            application/json:
+
   /main/search:
     get:
       tags:
