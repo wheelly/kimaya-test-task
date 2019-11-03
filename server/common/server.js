@@ -32,7 +32,9 @@ export default class ExpressServer {
       })
     );
     app.use(cookieParser(process.env.SESSION_SECRET));
-    app.use(Express.static(`${root}/front/public`));
+    const staticDir = `${root}${process.env.STATIC_DIR}`
+    l.debug(`Using static dir ${staticDir}`)
+    app.use(Express.static(staticDir));
 
     const apiSpec = path.join(__dirname, 'api.yml');
     const validateResponses = !!(

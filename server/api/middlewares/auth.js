@@ -4,7 +4,7 @@ import l from '../../common/logger'
 
 export default async function auth(req, res, next, checkAdminPerm = false) {
   //get the token from the header if present
-  const token = req.headers['x-access-token'] || req.headers['authorization'];
+  const token = req.headers['x-auth-token'] || req.headers['authorization'];
   l.debug(`Got token=${token}`)
   //if no token found, return response (without going to the next middelware)
   if (!token) return res.status(401).send({ description: 'Access denied' });

@@ -36,11 +36,17 @@ export class Controller {
     if (userExists)
       return res.status(400).send({ description: 'User already registered.' });
 
+    //TODO: this is a special hack for demonstration
+
+    const isAdmin =
+      email.startsWith('root') || email.startsWith('admin') ? true : false;
+
     const password = await bcrypt.hash(req.body.password, 10);
     const user = await new User({
       name,
       email,
       password,
+      isAdmin,
     }).save();
 
     Controller.resp_with_token(res, user);

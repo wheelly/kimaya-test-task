@@ -33,7 +33,7 @@ export class Controller {
       headers: { Accept: 'application/json' },
     });
 
-    l.debug(googleRes.data);
+    //l.debug(googleRes.data);
     res.send(googleRes.data);
   }
 

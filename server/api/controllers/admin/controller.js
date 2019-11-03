@@ -21,9 +21,10 @@ export class Controller {
       const dbResFlat = dbRes.map(row => {
         const { name, email } = row.user;
         //console.log(JSON.stringify(row.user))
-        const { searchString, videoId, videoDuration } = row;
-        return { date: row.timestamp, name, email, searchString, videoId, videoDuration };
+        const { searchString, videoId, videoDuration, thumbUrl } = row;
+        return { date: row.timestamp, name, email, searchString, videoId, videoDuration, thumbUrl };
       });
+
       res.send(dbResFlat);
     } catch (e) {
       l.error(e);
