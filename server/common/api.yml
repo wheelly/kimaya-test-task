@@ -62,12 +62,18 @@ paths:
                   type: string
                 searchString:
                   type: string
+                thumbUrl:
+                  type: string
                 videoDuration:
                   type: number
 
       responses:
         200:
-          description: Return ok
+          description: Return just ok
+          content:
+            application/json:
+              schema:
+                type: object
 
   /admin:
     get:
@@ -75,8 +81,23 @@ paths:
         - Show stats for admin user only
       responses:
         200:
+          description: Return stats
           content:
             application/json:
+              schema:
+                type: object
+
+  /main/setadmin:
+    get:
+      tags:
+        - Set admin for current user
+      responses:
+        200:
+          description: Return ok
+          content:
+            application/json:
+              schema:
+                type: object
 
   /main/search:
     get:

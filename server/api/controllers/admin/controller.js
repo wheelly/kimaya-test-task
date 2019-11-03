@@ -4,22 +4,27 @@ import l from '../../../common/logger';
 export class Controller {
   async stats(req, res) {
     try {
+      l.debug('Showing stats');
       /* TODO: implement limit and pages */
-      const dbRes = await Stats.aggregate
-        .lookup({
-          from: 'user',
-          localField: 'uid',
-          foreignField: '_id',
-          as: 'user',
-        })
-        .select('-password')
-        .map(row => {
-          const { name, email } = row.user;
-          const { date, searchString, videoId } = row;
-          return { date, name, email, searchString, videoId};
-        });
+      const dbRes = await Stats.aggregate([
+        {
+          $lookup: {
+            from: 'users',
+            localField: 'uid',
+            foreignField: '_id',
+            as: 'user',
+          },
+        },
+        { $unwind: '$user' }
+      ]);
 
-      res.send(dbRes);
+      const dbResFlat = dbRes.map(row => {
+        const { name, email } = row.user;
+        //console.log(JSON.stringify(row.user))
+        const { searchString, videoId, videoDuration } = row;
+        return { date: row.timestamp, name, email, searchString, videoId, videoDuration };
+      });
+      res.send(dbResFlat);
     } catch (e) {
       l.error(e);
       res

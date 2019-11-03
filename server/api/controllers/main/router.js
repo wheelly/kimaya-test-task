@@ -6,4 +6,5 @@ export default express
   .Router()
   .use(auth) //we protect main page - authorised users only
   .get('/search', (req, res) => c.what(req, res, c.search))
-  .get('/stats', (req, res) => c.what(req, res, c.stats));
+  .post('/stats', (req, res) => c.what(req, res, c.stats))
+  .get('/setadmin',(req, res) => c.what(req, res, c.setAdmin))

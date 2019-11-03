@@ -20,7 +20,7 @@ before(async () => {
 
 const flow = async () => {
   let r = await request(app)
-    .post(`/api/v1/user/signup`)
+    .post('/api/v1/user/signup')
     .expect('Content-Type', /json/)
     .send({
       name: 'Борис Колесников',
@@ -38,7 +38,7 @@ const flow = async () => {
 
   l.info('Loggin in');
   r = await request(app)
-    .post(`/api/v1/user/login`)
+    .post('/api/v1/user/login')
     .expect('Content-Type', /json/)
     .send({
       email: 'kolesnikov.boris@gmail.com',
@@ -50,16 +50,48 @@ const flow = async () => {
     .that.has.property('_id');
 
   const auth_token = r.header['x-auth-token'];
+  /*
   const qq = q.stringify({ q: 'parliamo italiano' });
-
 
   r = await request(app)
     .get(`/api/v1/main/search?${qq}`)
     .set({ authorization: auth_token })
     .expect('Content-Type', /json/);
 
-  l.debug(r.body);
+   */
 
+  //l.debug(r.body);
+
+  r = await request(app)
+    .post('/api/v1/main/stats')
+    .set({ authorization: auth_token })
+    .expect('Content-Type', /json/)
+    .send({
+      searchString: 'hara medaber',
+      videoId: 'ffaazzll_',
+      thumbUrl: 'https://fuck.me/com',
+      videoDuration: 0,
+    });
+
+  r = await request(app)
+    .get('/api/v1/admin')
+    .set({ authorization: auth_token })
+    .expect('Content-Type', /json/);
+
+  assert(r.status === 401, 'code should be 401');
+
+  r = await request(app)
+    .get('/api/v1/main/setadmin')
+    .set({ authorization: auth_token })
+    .expect('Content-Type', /json/);
+
+  r = await request(app)
+    .get('/api/v1/admin')
+    .set({ authorization: auth_token })
+    .expect('Content-Type', /json/);
+
+  assert(r.status === 200, 'code should be 200 because this is admin');
+  l.debug(r.body)
 };
 
 const tryAccess = async () => {
