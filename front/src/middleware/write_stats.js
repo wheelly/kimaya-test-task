@@ -10,19 +10,8 @@ export default store => next => async action => {
             return next(action)
     }
 
-    const token = sessionStorage.getItem('x-auth-token')
-
-    if ( !token || token === 'undefined') {
-        return next({
-            type: userConstants.STATS_WRITE_FAILURE,
-            error: 'x-auth-token token is missing'
-        })
-    }
-
     const { searchString, videoId, videoDuration, thumbUrl } = action
-
-    const statsReq = { searchString, videoId, thumbUrl, videoDuration: (videoDuration || 0), 'x-auth-token': token }
-
+    const statsReq = { searchString, videoId, thumbUrl, videoDuration: (videoDuration || 0) }
     console.log(`Writing to stats ${JSON.stringify(statsReq)}`)
 
     await writeStats(next, action, {

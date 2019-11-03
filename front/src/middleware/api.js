@@ -38,7 +38,13 @@ export default store => next => async action => {
     next(actionWith({ type: requestType }))
 
     try {
-        const response = await callApi(action)
+        const token = sessionStorage.getItem('x-auth-token')
+        let tokenHeader = {}
+
+        if (token)
+            tokenHeader['x-auth-token'] = token
+
+        const response = await callApi(action, tokenHeader)
         const json_s = await response.json()
         return next(actionWith({
             response: JSON.parse(json_s),
