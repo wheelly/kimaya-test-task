@@ -160,10 +160,10 @@ export default class UserForm extends Component {
 
     setSession(action) {
         //console.log(`Action=${JSON.stringify(action)}`)
-        const authToken = action.response.header['x-auth-token']
+        const authToken = action.response['x-auth-token']
         console.log(`Token=${authToken}`)
         sessionStorage.setItem('x-auth-token', authToken)
-        sessionStorage.setItem('isAdmin', (action.response.body.isAdmin ? 'ADMIN' : ''))
+        sessionStorage.setItem('isAdmin', (action.response.isAdmin ? 'ADMIN' : ''))
     }
 
 }

@@ -125,7 +125,7 @@ function HomePage({runSearch, history}) {
             {
                 isAdmin &&
                 <React.Fragment>
-                        <span className={classes.topDivider}></span>
+                        <span className={classes.topDivider}/>
                         <Link
                             component="button"
                             variant="body2"

@@ -27,8 +27,8 @@ class Login extends UserForm {
                     this.setSession(action)
                     this.props.history.push('/')
                 }
-            } catch (e) {
-                console.log('REJECTED PROMISE', e)
+            } catch (err) {
+                console.log('PROMISE ERROR')
             }
 
         }

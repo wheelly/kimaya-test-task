@@ -31,8 +31,7 @@ const userAuth = (state = {}, action)  => {
         case userConstants.LOGIN_REQUEST:
             return {}
         case userConstants.LOGIN_SUCCESS:
-            const r = action.response
-            return { type: action.type, ...r.body, 'x-auth-token': r.header['x-auth-token'] }
+            return { type: action.type, ...action.response }
         case userConstants.LOGIN_FAILURE:
             return {};
         default:
@@ -43,8 +42,7 @@ const userAuth = (state = {}, action)  => {
 const userReg = (state = {}, action)  => {
     switch (action.type) {
         case userConstants.REGISTER_SUCCESS:
-            const r = action.response
-            return { type: action.type, ...r.body, 'x-auth-token': r.header['x-auth-token'] }
+            return { type: action.type, ...action.response }
         case userConstants.REGISTER_REQUEST:
             return {}
         case userConstants.REGISTER_FAILURE:

@@ -26,8 +26,8 @@ export default function configureFakeBackend() {
 
                     if (filteredUsers.length) {
                         // if login details are valid return user details and fake jwt token
-                        const responseJson = {body: {...filteredUsers[0]}, header: { 'x-auth-token': filteredUsers[0]._id }};
-                        resolve({ ok: true, json: () => Promise.resolve(JSON.stringify(responseJson))} )
+                        resolve({ ok: true, json: () => Promise.resolve(filteredUsers[0]),
+                            headers: MH({ 'x-auth-token': filteredUsers[0]._id }) } )
                     } else {
                         console.log('email or password incorrect')
                         // else return error
@@ -58,15 +58,13 @@ export default function configureFakeBackend() {
                     }
                     users.push(newUser);
                     storage.setItem('users', JSON.stringify(users));
-                    const responseJson = {body: newUser, header: { 'x-auth-token': newUser._id }};
-                    resolve({ ok: true, json: () => Promise.resolve(JSON.stringify(responseJson))} )
-
+                    resolve({ ok: true, json: () => Promise.resolve(newUser),
+                        headers: MH({ 'x-auth-token': newUser._id }) } )
                     return;
                 }
 
                 if (url.endsWith(endPoints.SEARCH_YOUTUBE)) {
-                    const responseJson = {body: fakeGoogleRes() }
-                    resolve({ ok: true, json: () => Promise.resolve(JSON.stringify(responseJson))} )
+                    resolve({ ok: true, json: () => Promise.resolve(fakeGoogleRes())} )
                     return;
                 }
 
@@ -86,9 +84,7 @@ export default function configureFakeBackend() {
                         return { date, name, email, searchString, videoId, thumbUrl }
                     })
 
-                    console.log(`Stats=${responseJson}`)
-
-                    resolve({ ok: true, json: () => Promise.resolve(JSON.stringify(responseJson))} )
+                    resolve({ ok: true, json: () => Promise.resolve(responseJson)} )
                     return;
                 }
 
@@ -97,6 +93,12 @@ export default function configureFakeBackend() {
             }, 500);
         });
     }
+}
+
+const MH = headers => {
+    let h = {...headers}
+    h.__proto__.get = key => h[key]
+    return h
 }
 
 const fakeGoogleRes = () => {

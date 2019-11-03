@@ -1,4 +1,4 @@
-import { callApi } from './callapi'
+import { callApi, getAuthToken } from './callapi'
 
 // A Redux middleware that interprets actions with CALL_API info specified.
 // Performs the call and promises when such actions are dispatched.
@@ -38,18 +38,21 @@ export default store => next => async action => {
     next(actionWith({ type: requestType }))
 
     try {
-        const token = sessionStorage.getItem('x-auth-token')
-        let tokenHeader = {}
+        const response = await callApi(action)
+        const json = await response.json()
 
-        if (token)
-            tokenHeader['x-auth-token'] = token
+        if ( response.status === 200 ) {
+            let respAuthHeader = {}
+            const authTokenFromSrv = response.headers.get('x-auth-token')
+            if ( authTokenFromSrv )
+                respAuthHeader = { 'x-auth-token': authTokenFromSrv }
+            return next(actionWith({
+                response: { ...json, ...respAuthHeader },
+                type: successType
+            }))
+        } else
+            throw new Error(json.description)
 
-        const response = await callApi(action, tokenHeader)
-        const json_s = await response.json()
-        return next(actionWith({
-            response: JSON.parse(json_s),
-            type: successType
-        }))
     } catch (e) {
         return next(actionWith({
             type: failureType,

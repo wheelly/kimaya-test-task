@@ -24,10 +24,11 @@ class Grid extends Component {
             if (action.type === adminGridConstants.STATS_GRID_SUCCESS)
                 this.setState({'fetched': true})
 
-        } catch (e) {
-            console.log(`Error=${e}`)
+        } catch (err) {
+            console.log('PROMISE ERROR')
         }
     }
+
 
     componentDidMount() {
         this.loadStats()
@@ -35,40 +36,30 @@ class Grid extends Component {
 
     render() {
         const { columnDefs, rowData } = this.props
-        let columns = []
-
-        /*
-        columns = [{headerName: name, field: name}]
-        rows = [
-            { <field:name>: rowData[<N>][<i>] }
-        ]
-         */
-        if ( this.state.fetched ) {
-            columns = columnDefs.map(name => ({title: name, field: name}))
-            //rows = rowData.map( row => columnDefs.reduce((acc, item, i) => Object.assign(acc, {[item]: row[i]}), {} ) )
-        }
+        const columns = ['date', 'name', 'email', 'searchString', 'videoId'].map(name => ({title: name, field: name}))
 
         return (
             <MaterialTable
                 title='User Stats'
                 columns={columns}
-                data={
-                    rowData && rowData.map(row => {
-                        const {name, email, searchString, videoId, thumbUrl} = row
-                        let date = new Date(row.date);
-                        return (
-                            {
+                data = {
+                    this.state.fetched ? Object.keys(rowData).map(key => {
+                        const {name, email, searchString, videoId, thumbUrl} = rowData[key]
+                        let date = new Date(rowData[key].date);
+                        return ({
                                 date: date.toLocaleDateString() + ' ' + date.toLocaleTimeString(),
                                 name, email, searchString,
                                 videoId: <img /*className={classes.img}*/ alt={videoId} src={thumbUrl}/>
-                            }
-                        )
-                    })
+                            })
+                        }
+                    )
+                        : undefined
                 }
+
                 onRowClick={((evt, hoveredRow) => this.setState({ hoveredRow }))}
                 options={{
                     sorting: true,
-                    pageSize: 10,
+                    pageSize: 50,
                     rowStyle: rowData => ({
                         backgroundColor: (this.state.hoveredRow && this.state.hoveredRow.tableData.id === rowData.tableData.id) ? '#EEE' : '#FFF'
                     })

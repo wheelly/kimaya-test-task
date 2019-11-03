@@ -8,8 +8,7 @@ export const searchCore = (state = {}, action)  => {
         case userConstants.SEARCH_REQUEST:
             return { ...state, noItems }
         case userConstants.SEARCH_SUCCESS:
-            const r = action.response
-            return { ...r.body }
+            return { ...action.response }
         case userConstants.SEARCH_FAILURE:
             return { ...state, noItems };
         default:
