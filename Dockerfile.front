@@ -1,0 +1,24 @@
+FROM node:12-alpine AS builder
+
+ENV NODE_ENV=production
+ENV REACT_APP_LANGUAGE=en
+ENV REACT_APP_DEVELOPER_MODE=false
+
+RUN mkdir /app
+COPY front /app
+WORKDIR /app/
+
+RUN yarn --non-interactive install
+RUN yarn build
+
+FROM nginx:1.17-alpine
+
+COPY --from=builder /app/build/ /app/
+COPY /front/entrypoint /entrypoint
+RUN chmod +x /entrypoint
+COPY /front/nginx.conf /etc/nginx/nginx-template.conf
+
+EXPOSE 8080
+
+ENTRYPOINT ["/entrypoint"]
+CMD ["nginx", "-g", "daemon off;"]

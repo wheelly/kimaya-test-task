@@ -1,0 +1,28 @@
+FROM node:12-alpine
+
+RUN mkdir /app
+RUN mkdir /app/server
+COPY .babelrc /app/
+COPY .cfignore /app/
+COPY .eslintignore /app/
+COPY .eslintrc.json /app/
+COPY .nodemonrc.json /app/
+COPY package.json /app/
+COPY server /app/server
+WORKDIR /app/
+
+RUN yarn --non-interactive install
+RUN yarn run compile
+
+ENV APP_ID=kimaya-test-task
+ENV PORT=8080
+ENV LOG_LEVEL=debug
+ENV REQUEST_LIMIT=100kb
+
+ENV DB_URL=mongodb://db:27017/kimaya_task
+
+ENV OPENAPI_SPEC=/api/v1/spec
+ENV OPENAPI_ENABLE_RESPONSE_VALIDATION=false
+
+EXPOSE 8080
+CMD yarn start
