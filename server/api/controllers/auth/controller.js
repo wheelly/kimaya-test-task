@@ -1,7 +1,7 @@
 import User, { validateUser } from '../../../models/users';
 import l from '../../../common/logger';
-import bcrypt from 'bcrypt';
-import auth from '../../middlewares/auth';
+import crypto from 'crypto'
+
 
 export class Controller {
   async what(req, res, fn) {
@@ -41,7 +41,7 @@ export class Controller {
     const isAdmin =
       email.startsWith('root') || email.startsWith('admin') ? true : false;
 
-    const password = await bcrypt.hash(req.body.password, 10);
+    const password = crypto.pbkdf2Sync(req.body.password, 'salt', 100000, 64, 'sha512');
     const user = await new User({
       name,
       email,
@@ -62,9 +62,9 @@ export class Controller {
         .status(400)
         .send({ description: 'Login or password incorrect' });
 
-    const ret = await bcrypt.compare(req.body.password, user.password);
+    const crypted = crypto.pbkdf2Sync(req.body.password, 'salt', 100000, 64, 'sha512');
 
-    if (!ret)
+    if (crypted !== user.password)
       return res
         .status(400)
         .send({ description: 'Login or password incorrect' });
