@@ -45,11 +45,17 @@ const flow = async () => {
       password: '111',
     });
 
+  l.debug(r.text)
+
+  expect(r.header)
+    .to.be.an.an('object')
+    .that.has.property('x-auth-token');
+
   expect(r.body)
     .to.be.an.an('object')
     .that.has.property('_id');
 
-  const auth_token = r.header['x-auth-token'];
+  const auth_token = r.headers['x-auth-token'];
   /*
   const qq = q.stringify({ q: 'parliamo italiano' });
 
@@ -91,7 +97,7 @@ const flow = async () => {
     .expect('Content-Type', /json/);
 
   assert(r.status === 200, 'code should be 200 because this is admin');
-  l.debug(r.body)
+  l.debug(r.body);
 };
 
 const tryAccess = async () => {

@@ -1,7 +1,6 @@
 import User, { validateUser } from '../../../models/users';
 import l from '../../../common/logger';
-import crypto from 'crypto'
-
+import crypto from 'crypto';
 
 export class Controller {
   async what(req, res, fn) {
@@ -16,6 +15,7 @@ export class Controller {
   static resp_with_token(res, user) {
     const token = user.generateAuthToken();
     const { _id, name, email, isAdmin } = user;
+    l.debug(`Created token=${token}`);
     res.header('x-auth-token', token).send({
       _id,
       name,
@@ -41,7 +41,10 @@ export class Controller {
     const isAdmin =
       email.startsWith('root') || email.startsWith('admin') ? true : false;
 
-    const password = crypto.pbkdf2Sync(req.body.password, 'salt', 100000, 64, 'sha512');
+    const password = crypto
+      .pbkdf2Sync(req.body.password, 'salt', 100000, 64, 'sha512')
+      .toString('hex');
+
     const user = await new User({
       name,
       email,
@@ -62,7 +65,9 @@ export class Controller {
         .status(400)
         .send({ description: 'Login or password incorrect' });
 
-    const crypted = crypto.pbkdf2Sync(req.body.password, 'salt', 100000, 64, 'sha512');
+    const crypted = crypto
+      .pbkdf2Sync(req.body.password, 'salt', 100000, 64, 'sha512')
+      .toString('hex');
 
     if (crypted !== user.password)
       return res
