@@ -79,6 +79,8 @@ const flow = async () => {
       videoDuration: 0,
     });
 
+  l.debug(r.text)
+
   r = await request(app)
     .get('/api/v1/admin')
     .set({ authorization: auth_token })

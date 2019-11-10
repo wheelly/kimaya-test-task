@@ -7,6 +7,7 @@ import cookieParser from 'cookie-parser';
 
 import { OpenApiValidator } from 'express-openapi-validator';
 import errorHandler from '../api/middlewares/error.handler';
+import 'express-async-errors';
 
 let connectDb = null
 

@@ -3,14 +3,6 @@ import l from '../../../common/logger';
 import crypto from 'crypto';
 
 export class Controller {
-  async what(req, res, fn) {
-    try {
-      await fn(req, res);
-    } catch (e) {
-      l.error(e);
-      res.status(500).send({ description: 'Internal error.' });
-    }
-  }
 
   static resp_with_token(res, user) {
     const token = user.generateAuthToken();

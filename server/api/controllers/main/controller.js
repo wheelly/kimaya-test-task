@@ -14,14 +14,6 @@ const opts = {
 };
 
 export class Controller {
-  async what(req, res, fn) {
-    try {
-      await fn(req, res);
-    } catch (e) {
-      l.error(e);
-      res.status(500).send({ description: 'Internal error.' });
-    }
-  }
 
   async search(req, res) {
     const { q } = req.query;
